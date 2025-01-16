@@ -76,6 +76,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-RU'
 
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'media_files/'
+
 TIME_ZONE = 'UTC'
 
 USE_I18N = True

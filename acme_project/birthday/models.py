@@ -11,7 +11,7 @@ class Birthday(models.Model):
         help_text='Необязательное поле'
         )
     birthday = models.DateField('Дата рождения', validators=(real_age,))
-    image = models.ImageField('Фото', blank=True)
+    image = models.ImageField('Фото', blank=True, upload_to='birthdays_images')
 
     class Meta:
         constraints = (
