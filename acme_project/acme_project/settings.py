@@ -6,7 +6,11 @@ SECRET_KEY = 'django-insecure-m&$lzdzkutvrbr5vt=jpm)7#g7cken_tk%($ty+w902n7wb#=e
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0000:0000:0000:0000:0000:0000:0000:0001',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -17,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'birthday.apps.BirthdayConfig',
     'pages.apps.PagesConfig',
+    'core.apps.CoreConfig',
     'django_bootstrap5',
 ]
 
@@ -76,20 +81,22 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-RU'
 
-MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_URL = 'media_files/'
-
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = False
+USE_L10N = False  # так виджет календарь выглядит лучше
 
 USE_TZ = True
 
 STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# customized
+
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = 'media_files/'
 
 # Подключаем бэкенд filebased.EmailBackend:
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
@@ -98,3 +105,5 @@ EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 LOGIN_REDIRECT_URL = 'pages:homepage'
 LOGIN_URL = 'login'
+
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'

@@ -5,6 +5,10 @@ from django.urls import include, path, reverse_lazy
 from django.conf.urls.static import static
 from django.conf import settings
 
+
+handler404 = 'core.views.page_not_found'
+handler403 = 'core.views.not_allowed'
+
 urlpatterns = [
     path('', include('pages.urls')),
     path('auth/', include('django.contrib.auth.urls')),

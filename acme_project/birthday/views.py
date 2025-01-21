@@ -1,6 +1,7 @@
-# from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 # from django.core.paginator import Paginator
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
@@ -12,14 +13,36 @@ from django.views.generic import (
     )
 from django.urls import reverse_lazy
 
-from .forms import BirthdayForm
-from .models import Birthday
+from .forms import BirthdayForm, CongratulationForm
+from .models import Birthday, Congratulation
 from .utils import calculate_birthday_countdown
 
 
 # @login_required
 # def simple_view(request):
 #     return HttpResponse('Страница для залогиненных пользователей!')
+
+
+# вместо add_comment
+class CongratuletionCreateView(LoginRequiredMixin, CreateView):
+    birthday = None
+    model = Congratulation
+    form_class = CongratulationForm
+
+    # Переопределяем dispatch()
+    def dispatch(self, request, *args, **kwargs):
+        self.birthday = get_object_or_404(Birthday, pk=kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    # Переопределяем form_valid()
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.birthday = self.birthday
+        return super().form_valid(form)
+
+    # Переопределяем get_success_url()
+    def get_success_url(self):
+        return reverse('birthday:detail', kwargs={'pk': self.birthday.pk})
 
 
 class OnlyAuthorMixin(UserPassesTestMixin):
@@ -39,6 +62,14 @@ class BirthdayDetailView(DetailView):
         context['birthday_countdown'] = calculate_birthday_countdown(
             self.object.birthday
             )
+        # Записываем в переменную form пустой объект формы.
+        context['form'] = CongratulationForm()
+        # Запрашиваем все поздравления для выбранного дня рождения.
+        context['congratulations'] = (
+            # Дополнительно подгружаем авторов комментариев,
+            # чтобы избежать множества запросов к БД.
+            self.object.congratulations.select_related('author')
+        )
         return context
 
 
@@ -67,6 +98,21 @@ class BirthdayListView(ListView):
     model = Birthday
     ordering = 'id'
     paginate_by = 5
+
+
+# вместо функции использую CBV CongratulationCreateView
+# @login_required
+# def add_comment(request, pk):
+#     birthday = get_object_or_404(Birthday, pk=pk)
+#     form = CongratulationForm(request.POST)
+
+#     if form.is_valid():
+#         congratulation = form.save(commit=False)
+#         congratulation.author = request.user
+#         congratulation.birthday = birthday
+#         congratulation.save()
+
+#     return redirect('birthday:detail', pk=pk)
 
 
 # def delete_birthday_old(request, pk):
