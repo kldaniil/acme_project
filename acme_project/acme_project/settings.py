@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'core.apps.CoreConfig',
     'django_bootstrap5',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -33,6 +34,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'acme_project.urls'
@@ -107,3 +109,6 @@ LOGIN_REDIRECT_URL = 'pages:homepage'
 LOGIN_URL = 'login'
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+
+# для дебаг тулбара:
+INTERNAL_IPS = ['127.0.0.1',]

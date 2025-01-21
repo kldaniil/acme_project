@@ -96,8 +96,14 @@ class BirthdayDeleteView(OnlyAuthorMixin, DeleteView):
 
 class BirthdayListView(ListView):
     model = Birthday
+    # По умолчанию этот класс
+    # выполняет запрос queryset = Birthday.objects.all(),
+    # но мы его переопределим:
+    queryset = Birthday.objects.prefetch_related(
+        'tags'
+        ).select_related('author')
     ordering = 'id'
-    paginate_by = 5
+    paginate_by = 10
 
 
 # вместо функции использую CBV CongratulationCreateView
